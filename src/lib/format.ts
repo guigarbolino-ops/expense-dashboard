@@ -1,3 +1,5 @@
+import { parseSheetDate } from "./filterUtils";
+
 export function formatCurrency(amount: number): string {
   return new Intl.NumberFormat("es-AR", {
     style: "currency",
@@ -7,15 +9,13 @@ export function formatCurrency(amount: number): string {
 }
 
 export function formatDate(dateStr: string): string {
-  // If the sheet provides DD/MM/YYYY
-  const parts = dateStr.split("/");
-  if (parts.length === 3) {
-    const [day, month, year] = parts;
-    const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+  const d = parseSheetDate(dateStr);
+  if (d) {
     return new Intl.DateTimeFormat("es-AR", {
       month: "short",
       day: "numeric",
-    }).format(date);
+      year: d.getFullYear() !== new Date().getFullYear() ? "2-digit" : undefined,
+    }).format(d);
   }
   return dateStr;
 }
