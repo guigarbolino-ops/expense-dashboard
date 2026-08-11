@@ -39,14 +39,22 @@ export default function AIChat() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: [...messages, userMessage] }),
       });
+      
       const data = await response.json();
 
-      setMessages((prev) => [...prev, { role: "assistant", content: data.text }]);
+      if (!response.ok || data.error) {
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: `⚠️ ${data.error || "No se pudo conectar con el servidor."}` },
+        ]);
+      } else {
+        setMessages((prev) => [...prev, { role: "assistant", content: data.text }]);
+      }
     } catch (error) {
       console.error(error);
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Lo siento, ocurrió un error de conexión con la IA." },
+        { role: "assistant", content: "⚠️ Lo siento, ocurrió un error de conexión con la IA." },
       ]);
     } finally {
       setIsLoading(false);
@@ -63,7 +71,7 @@ export default function AIChat() {
   };
 
   return (
-    <div className="flex flex-col bg-white rounded-3xl shadow-sm border border-gray-100/80 h-[72vh] relative overflow-hidden">
+    <div className="flex flex-col bg-white rounded-3xl shadow-sm border border-gray-100/80 h-[72vh] relative overflow-hidden font-sans">
       {/* Messages Scroll Area */}
       <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 no-scrollbar pb-24">
         {messages.map((m, idx) => (
