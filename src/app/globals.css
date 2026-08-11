@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: #818cf8; /* Periwinkle Indigo */
+  --color-primary-dark: #6366f1;
+  --color-secondary: #fcd34d; /* Soft Gold/Yellow */
+  --color-accent-mint: #6ee7b7; /* Mint Green */
+  --color-accent-coral: #fca5a5; /* Coral */
+  --color-muted: #f3f4f1;
+  --color-muted-foreground: #71717a;
+  --font-sans: var(--font-plus-jakarta), sans-serif;
+}
+
+:root {
+  --background: #eaece4; /* Soft warm sage background */
+  --foreground: #18181b;
+  --card: #ffffff;
+  --card-foreground: #18181b;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Hide scrollbars cleanly */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
