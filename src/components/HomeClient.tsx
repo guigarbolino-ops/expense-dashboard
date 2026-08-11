@@ -164,7 +164,7 @@ export default function HomeClient({ initialExpenses }: { initialExpenses: Expen
                     ))}
                   </Pie>
                   <Tooltip
-                    formatter={(value: number) => [formatCurrency(value), "Monto"]}
+                    formatter={(value: any) => [formatCurrency(Number(value) || 0), "Monto"]}
                     contentStyle={{
                       borderRadius: "16px",
                       border: "none",
@@ -267,7 +267,7 @@ export default function HomeClient({ initialExpenses }: { initialExpenses: Expen
                 />
                 <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: "#9ca3af" }} />
                 <Tooltip
-                  formatter={(val: number) => [formatCurrency(val), "Gasto"]}
+                  formatter={(val: any) => [formatCurrency(Number(val) || 0), "Gasto"]}
                   contentStyle={{
                     borderRadius: "14px",
                     border: "none",

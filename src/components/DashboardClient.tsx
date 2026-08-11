@@ -20,7 +20,6 @@ export default function DashboardClient({ initialExpenses }: { initialExpenses: 
   // Filter logic
   const filteredExpenses = useMemo(() => {
     return initialExpenses.filter((e) => {
-      // Handle missing dates
       if (!e.date) return false;
       
       const parts = e.date.split("/");
@@ -66,7 +65,6 @@ export default function DashboardClient({ initialExpenses }: { initialExpenses: 
       const d = formatDate(e.date);
       acc[d] = (acc[d] || 0) + e.amount;
     });
-    // Assuming sorted by date mostly, but ideally we'd sort by parsed date
     return Object.entries(acc).map(([date, amount]) => ({ date, amount }));
   }, [filteredExpenses]);
 
@@ -80,7 +78,6 @@ export default function DashboardClient({ initialExpenses }: { initialExpenses: 
 
   return (
     <div className="flex flex-col gap-8 pb-8">
-      
       {/* Filters */}
       <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
@@ -169,13 +166,10 @@ export default function DashboardClient({ initialExpenses }: { initialExpenses: 
                     tick={{ fontSize: 12, fill: '#94a3b8' }} 
                     dy={10}
                   />
-                  <YAxis 
-                    hide 
-                    domain={['auto', 'auto']}
-                  />
+                  <YAxis hide domain={['auto', 'auto']} />
                   <Tooltip 
                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                    formatter={(value: number) => formatCurrency(value)}
+                    formatter={(value: any) => formatCurrency(Number(value) || 0)}
                   />
                   <Line 
                     type="monotone" 
@@ -214,7 +208,7 @@ export default function DashboardClient({ initialExpenses }: { initialExpenses: 
                     ))}
                   </Pie>
                   <Tooltip 
-                    formatter={(value: number) => formatCurrency(value)}
+                    formatter={(value: any) => formatCurrency(Number(value) || 0)}
                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                   />
                 </PieChart>
@@ -223,7 +217,6 @@ export default function DashboardClient({ initialExpenses }: { initialExpenses: 
               <div className="flex items-center justify-center h-full text-gray-400 text-sm">Sin datos para mostrar</div>
             )}
             
-            {/* Custom Legend */}
             <div className="absolute top-0 right-0 max-h-full overflow-y-auto no-scrollbar w-1/3 flex flex-col gap-2 pt-2 pb-2 text-xs">
               {categoryTotals.slice(0, 5).map((cat, i) => (
                 <div key={cat.name} className="flex items-center gap-2">
@@ -266,7 +259,6 @@ export default function DashboardClient({ initialExpenses }: { initialExpenses: 
           )}
         </div>
       </div>
-      
     </div>
   );
 }
