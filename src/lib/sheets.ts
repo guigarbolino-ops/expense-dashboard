@@ -29,18 +29,25 @@ export async function getExpenses(): Promise<Expense[]> {
       }
     }
 
-    // 2. Fallback to local file (Local Development)
-    if (!auth) {
-      const credsPath = path.join(process.cwd(), process.env.GCP_SERVICE_ACCOUNT_FILE || 'registro-de-gastos-bot-4b9a69b8b780.json');
-      if (!fs.existsSync(credsPath)) {
-        console.warn(`[getExpenses] Credentials file not found at ${credsPath}. Returning empty array.`);
-        return [];
+    // 2. Local development fallback (Ignored by Turbopack tracing in production)
+    if (!auth && process.env.NODE_ENV !== 'production') {
+      try {
+        const credsFile = process.env.GCP_SERVICE_ACCOUNT_FILE || 'registro-de-gastos-bot-4b9a69b8b780.json';
+        const credsPath = path.join(/*turbopackIgnore: true*/ process.cwd(), credsFile);
+        if (fs.existsSync(credsPath)) {
+          auth = new google.auth.GoogleAuth({
+            keyFile: credsPath,
+            scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+          });
+        }
+      } catch (err) {
+        console.warn("Local credentials read skipped:", err);
       }
+    }
 
-      auth = new google.auth.GoogleAuth({
-        keyFile: credsPath,
-        scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
-      });
+    if (!auth) {
+      console.warn("[getExpenses] No auth mechanism available. Returning empty array.");
+      return [];
     }
 
     const sheets = google.sheets({ version: 'v4', auth });
