@@ -1,5 +1,5 @@
 import { 
-  ShoppingBag, 
+  Salad,
   Home, 
   Dog, 
   Car, 
@@ -14,8 +14,8 @@ import {
 export function getCategoryIcon(categoryName: string): LucideIcon {
   const norm = (categoryName || "").toLowerCase().trim();
 
-  // 1. Alimentación
-  if (norm.includes("alimentac") || norm.includes("comida") || norm.includes("super")) return ShoppingBag;
+  // 1. Alimentación (Vegetariano: Ensalada / Verduras / Nutrición)
+  if (norm.includes("alimentac") || norm.includes("comida") || norm.includes("super") || norm.includes("mercado") || norm.includes("dietetica") || norm.includes("verduleria")) return Salad;
   
   // 2. Vivienda
   if (norm.includes("vivienda") || norm.includes("casa") || norm.includes("alquiler")) return Home;

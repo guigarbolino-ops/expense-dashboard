@@ -94,7 +94,7 @@ export default function HomeClient({ initialExpenses }: { initialExpenses: Expen
     percent,
     name,
   }: any) => {
-    if (percent < 0.06) return null; // Hide labels on tiny slices to avoid crowding
+    if (percent < 0.05) return null; // Hide labels on tiny slices to avoid crowding
 
     const RADIAN = Math.PI / 180;
     const radius = innerRadius + (outerRadius - innerRadius) * 0.52;
@@ -125,7 +125,7 @@ export default function HomeClient({ initialExpenses }: { initialExpenses: Expen
     <div className="flex flex-col gap-5 pb-24 font-sans">
       {/* 1. Hero Card - Total & Donut Chart */}
       <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100/80 relative overflow-hidden">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-2">
           <div>
             <h2 className="text-base font-bold text-gray-900">Gastos del Período</h2>
             <p className="text-xs text-gray-400">
@@ -140,8 +140,8 @@ export default function HomeClient({ initialExpenses }: { initialExpenses: Expen
           </div>
         </div>
 
-        {/* Center Donut with Floating Total */}
-        <div className="h-72 w-full relative flex items-center justify-center my-2">
+        {/* Enlarged Center Donut with Scaled Total Text */}
+        <div className="h-80 sm:h-96 w-full relative flex items-center justify-center my-1">
           {categoryData.length > 0 ? (
             <>
               <ResponsiveContainer width="100%" height="100%">
@@ -150,8 +150,8 @@ export default function HomeClient({ initialExpenses }: { initialExpenses: Expen
                     data={categoryData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={65}
-                    outerRadius={120}
+                    innerRadius={78}
+                    outerRadius={135}
                     paddingAngle={3}
                     dataKey="value"
                     stroke="none"
@@ -177,10 +177,10 @@ export default function HomeClient({ initialExpenses }: { initialExpenses: Expen
                 </PieChart>
               </ResponsiveContainer>
 
-              {/* Total inside the Donut hole */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
-                <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Total</span>
-                <span className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight mt-0.5">
+              {/* Total inside the expanded Donut hole */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center px-4">
+                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest">Total</span>
+                <span className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight mt-0.5 max-w-[140px] truncate">
                   {formatCurrency(totalSpent)}
                 </span>
                 <span className="text-[10px] text-gray-400 mt-1 font-medium bg-gray-100/80 px-2 py-0.5 rounded-full">
@@ -198,7 +198,7 @@ export default function HomeClient({ initialExpenses }: { initialExpenses: Expen
 
         {/* Categories showing Category Icon & Total Amount */}
         {categoryData.length > 0 && (
-          <div className="mt-4 pt-4 border-t border-gray-100">
+          <div className="mt-2 pt-4 border-t border-gray-100">
             <div className="grid grid-cols-3 gap-3">
               {categoryData.slice(0, 3).map((cat) => {
                 const CatIcon = getCategoryIcon(cat.name);
