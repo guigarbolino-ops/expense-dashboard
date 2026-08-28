@@ -47,20 +47,45 @@ Reglas:
 - Identifica patrones útiles.
 - Usa formato Markdown (negritas, listas) para facilitar la lectura.`;
 
-    const fullPrompt = `${systemInstruction}\n\n${contextStr}\n\nPregunta del usuario: ${userMessage}`;
+    // Build conversation history (last 6 messages before current)
+    const history = messages.slice(0, -1).slice(-6);
+    let historyStr = "";
+    if (history.length > 0) {
+      historyStr = "\n\nHistorial de la conversación reciente:\n" + history
+        .map((m: any) => `${m.role === 'user' ? 'Usuario' : 'Asistente'}: ${m.content}`)
+        .join('\n');
+    }
+
+    const fullPrompt = `${systemInstruction}\n\n${contextStr}${historyStr}\n\nPregunta actual del usuario: ${userMessage}`;
 
     const ai = new GoogleGenAI({ apiKey });
-    const response = await ai.models.generateContent({
-      model: 'gemini-3.6-flash',
-      contents: fullPrompt,
-    });
+    const modelsToTry = ['gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-3.5-flash-lite', 'gemini-3.7-flash'];
+    let aiText = "";
+    let lastErr = null;
 
-    const aiText = response.text || "No se obtuvo respuesta de Gemini.";
-    return NextResponse.json({ text: aiText });
+    for (const modelName of modelsToTry) {
+      try {
+        const response = await ai.models.generateContent({
+          model: modelName,
+          contents: fullPrompt,
+        });
+        aiText = response.text || "";
+        if (aiText) break;
+      } catch (err: any) {
+        lastErr = err;
+        console.warn(`Model ${modelName} failed:`, err?.message || err);
+      }
+    }
+
+    if (!aiText && lastErr) {
+      throw lastErr;
+    }
+
+    return NextResponse.json({ text: aiText || "No se obtuvo respuesta de Gemini." });
   } catch (error: any) {
     console.error("AI Assistant API Error:", error);
     return NextResponse.json(
-      { error: "Error al procesar tu consulta con Gemini." },
+      { error: `Error al procesar tu consulta con Gemini: ${error?.message || error}` },
       { status: 500 }
     );
   }

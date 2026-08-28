@@ -71,9 +71,9 @@ export default function AIChat() {
   };
 
   return (
-    <div className="flex flex-col bg-white rounded-3xl shadow-sm border border-gray-100/80 h-[72vh] relative overflow-hidden font-sans">
+    <div className="flex flex-col bg-white rounded-3xl shadow-sm border border-gray-100/80 h-[72vh] overflow-hidden font-sans">
       {/* Messages Scroll Area */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 no-scrollbar pb-24">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
         {messages.map((m, idx) => (
           <div key={idx} className={`flex gap-3 ${m.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
             <div
@@ -108,12 +108,12 @@ export default function AIChat() {
         <div ref={endOfMessagesRef} />
       </div>
 
-      {/* Floating Pill Input Bar */}
-      <div className="absolute bottom-3 left-3 right-3 bg-white/90 backdrop-blur-md p-2 rounded-full border border-gray-200/80 shadow-lg">
-        <form onSubmit={sendMessage} className="flex items-center gap-2">
+      {/* Input Bar: Docked at bottom, never overlaps text */}
+      <div className="p-3 sm:p-4 bg-gray-50/80 border-t border-gray-100 rounded-b-3xl">
+        <form onSubmit={sendMessage} className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border border-gray-200/80 shadow-xs focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
           <input
             type="text"
-            className="flex-1 bg-transparent text-gray-900 text-sm px-4 py-2 outline-none placeholder:text-gray-400"
+            className="flex-1 bg-transparent text-gray-900 text-sm px-2 py-1.5 outline-none placeholder:text-gray-400"
             placeholder="Pregunta algo sobre tus gastos..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -122,9 +122,9 @@ export default function AIChat() {
           <button
             type="submit"
             disabled={!input.trim() || isLoading}
-            className="w-10 h-10 bg-gray-900 text-white rounded-full flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed hover:bg-black transition-colors shrink-0 shadow-sm"
+            className="w-9 h-9 bg-gray-900 text-white rounded-full flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed hover:bg-black transition-colors shrink-0 shadow-xs"
           >
-            <Send size={16} className="ml-0.5" />
+            <Send size={15} className="ml-0.5" />
           </button>
         </form>
       </div>
